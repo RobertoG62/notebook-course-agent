@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>שביל ישראל — המדריך המלא | The Complete Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+--bg:#0a0a0f;--text:#e8e8ec;--green:#22C55E;--blue:#3B82F6;--amber:#F59E0B;--red:#EF4444;
+--glass:rgba(255,255,255,0.04);--glass-border:rgba(255,255,255,0.08);
+--sidebar-w:260px;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{
+font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);
+line-height:1.8;overflow-x:hidden;min-height:100vh;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--green);border-radius:3px}
+
+/* STAR FIELD */
+#starfield{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+
+/* PROGRESS SIDEBAR — DESKTOP */
+.progress-nav{
+position:fixed;top:50%;right:20px;transform:translateY(-50%);
+z-index:100;display:flex;flex-direction:column;gap:6px;
+background:rgba(10,10,15,0.85);backdrop-filter:blur(12px);
+border:1px solid var(--glass-border);border-radius:16px;
+padding:16px 12px;width:220px;
+}
+.progress-nav a{
+display:flex;align-items:center;gap:8px;
+text-decoration:none;color:rgba(232,232,236,0.5);
+font-size:0.82rem;font-weight:500;padding:6px 10px;
+border-radius:8px;transition:all 0.3s;
+}
+.progress-nav a .nav-dot{
+width:8px;height:8px;border-radius:50%;
+background:rgba(232,232,236,0.2);flex-shrink:0;transition:all 0.3s;
+}
+.progress-nav a.active{color:var(--green)}
+.progress-nav a.active .nav-dot{background:var(--green);box-shadow:0 0 8px var(--green)}
+.progress-nav a:hover{color:var(--text);background:rgba(255,255,255,0.05)}
+
+/* MOBILE TOP NAV */
+.mobile-nav{
+display:none;position:sticky;top:0;z-index:100;
+background:rgba(10,10,15,0.92);backdrop-filter:blur(12px);
+border-bottom:1px solid var(--glass-border);
+overflow-x:auto;white-space:nowrap;padding:10px 16px;
+-webkit-overflow-scrolling:touch;
+}
+.mobile-nav a{
+display:inline-block;text-decoration:none;color:rgba(232,232,236,0.5);
+font-size:0.78rem;font-weight:500;padding:6px 12px;
+border-radius:20px;transition:all 0.3s;margin-left:4px;
+}
+.mobile-nav a.active{color:var(--green);background:rgba(34,197,94,0.12)}
+
+@media(max-width:768px){
+.progress-nav{display:none}
+.mobile-nav{display:block}
+}
+
+/* MAIN */
+main{
+max-width:820px;
+margin:0 auto;
+padding:0 24px 80px;
+position:relative;z-index:1;
+}
+@media(min-width:769px){
+main{margin-right:var(--sidebar-w);margin-left:auto;padding-right:40px}
+}
+
+/* HERO */
+.hero{
+height:100vh;display:flex;flex-direction:column;
+align-items:center;justify-content:center;text-align:center;
+position:relative;z-index:1;
+}
+.hero h1{
+font-size:clamp(3rem,8vw,6rem);font-weight:900;
+background:linear-gradient(135deg,var(--green),#86efac,var(--green));
+-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+background-clip:text;
+text-shadow:none;
+filter:drop-shadow(0 0 40px rgba(34,197,94,0.3));
+margin-bottom:16px;
+}
+.hero .subtitle{
+font-size:clamp(1rem,2.5vw,1.4rem);font-weight:300;
+color:rgba(232,232,236,0.7);margin-bottom:48px;letter-spacing:0.02em;
+}
+.scroll-indicator{
+position:absolute;bottom:40px;
+display:flex;flex-direction:column;align-items:center;gap:8px;
+color:rgba(232,232,236,0.4);font-size:0.8rem;
+animation:floatDown 2s ease-in-out infinite;
+}
+@keyframes floatDown{0%,100%{transform:translateY(0)}50%{transform:translateY(10px)}}
+
+/* CHAPTER */
+.chapter{padding:80px 0 40px;opacity:0;transform:translateY(30px);transition:all 0.7s ease-out}
+.chapter.visible{opacity:1;transform:translateY(0)}
+.chapter-header{margin-bottom:40px}
+.chapter-label{
+font-size:0.8rem;font-weight:500;color:var(--green);
+text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;
+}
+.chapter-title{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;line-height:1.3}
+.chapter p,.chapter li{font-size:1rem;color:rgba(232,232,236,0.82);margin-bottom:12px}
+.chapter ul,.chapter ol{padding-right:24px;margin-bottom:20px}
+.chapter li{margin-bottom:6px}
+.chapter h3{font-size:1.2rem;font-weight:700;margin:32px 0 16px;color:var(--text)}
+.chapter h4{font-size:1.05rem;font-weight:600;margin:24px 0 12px;color:rgba(232,232,236,0.9)}
+
+/* TIP BOXES */
+.tip-box{
+border-radius:12px;padding:20px 24px;margin:24px 0;
+background:var(--glass);backdrop-filter:blur(12px);
+border:1px solid var(--glass-border);
+border-right:4px solid var(--green);
+position:relative;
+}
+.tip-box .tip-icon{font-size:1.3rem;margin-left:8px}
+.tip-box .tip-label{font-weight:700;font-size:0.9rem;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.tip-box p{margin-bottom:6px;font-size:0.95rem}
+.tip-box.info{border-right-color:var(--blue)}
+.tip-box.info .tip-label{color:var(--blue)}
+.tip-box.warning{border-right-color:var(--amber)}
+.tip-box.warning .tip-label{color:var(--amber)}
+.tip-box.danger{border-right-color:var(--red)}
+.tip-box.danger .tip-label{color:var(--red)}
+.tip-box.pro .tip-label{color:var(--green)}
+
+/* INFO CARDS */
+.info-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin:24px 0}
+@media(max-width:768px){.info-cards{grid-template-columns:1fr}}
+.info-card{
+background:var(--glass);backdrop-filter:blur(12px);
+border:1px solid var(--glass-border);border-radius:12px;
+padding:20px;transition:all 0.3s;
+}
+.info-card:hover{border-color:rgba(34,197,94,0.3);box-shadow:0 0 20px rgba(34,197,94,0.08)}
+.info-card .card-title{font-weight:700;font-size:1rem;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.info-card .card-body{font-size:0.9rem;color:rgba(232,232,236,0.7);line-height:1.7}
+.info-card a{color:var(--green);text-decoration:none}
+.info-card a:hover{text-decoration:underline}
+
+/* TIMELINE / FLOW STEPS */
+.timeline{position:relative;margin:32px 0;padding-right:40px}
+.timeline::before{
+content:'';position:absolute;right:15px;top:0;bottom:0;width:2px;
+background:linear-gradient(to bottom,var(--green),var(--blue),var(--amber));
+}
+.timeline-item{position:relative;margin-bottom:28px;opacity:0;transform:translateX(20px);transition:all 0.5s ease-out}
+.timeline-item.visible{opacity:1;transform:translateX(0)}
+.timeline-item .t-dot{
+position:absolute;right:-40px;top:4px;width:30px;height:30px;
+border-radius:50%;background:var(--bg);border:2px solid var(--green);
+display:flex;align-items:center;justify-content:center;
+font-size:0.75rem;font-weight:700;color:var(--green);z-index:2;
+}
+.timeline-item .t-content{
+background:var(--glass);backdrop-filter:blur(12px);
+border:1px solid var(--glass-border);border-radius:10px;
+padding:16px 20px;
+}
+.timeline-item .t-title{font-weight:700;font-size:0.95rem;margin-bottom:6px}
+.timeline-item .t-text{font-size:0.9rem;color:rgba(232,232,236,0.75)}
+
+/* CHECKLIST */
+.checklist{margin:24px 0}
+.checklist-group{margin-bottom:28px}
+.checklist-group-title{
+font-weight:700;font-size:1.05rem;margin-bottom:12px;
+padding-bottom:8px;border-bottom:1px solid var(--glass-border);
+display:flex;align-items:center;gap:8px;
+}
+.checklist-item{
+display:flex;align-items:flex-start;gap:12px;
+padding:10px 14px;border-radius:8px;margin-bottom:4px;
+transition:background 0.2s;cursor:pointer;
+}
+.checklist-item:hover{background:rgba(255,255,255,0.03)}
+.checklist-item input[type="checkbox"]{
+appearance:none;-webkit-appearance:none;width:20px;height:20px;
+border:2px solid rgba(232,232,236,0.3);border-radius:5px;
+flex-shrink:0;cursor:pointer;position:relative;transition:all 0.3s;
+margin-top:3px;
+}
+.checklist-item input[type="checkbox"]:checked{
+background:var(--green);border-color:var(--green);
+}
+.checklist-item input[type="checkbox"]:checked::after{
+content:'✓';position:absolute;top:50%;left:50%;
+transform:translate(-50%,-50%);color:var(--bg);
+font-size:0.75rem;font-weight:900;
+}
+.checklist-item.checked .item-name{text-decoration:line-through;opacity:0.5}
+.item-details{flex:1}
+.item-name{font-size:0.92rem;font-weight:500}
+.item-meta{font-size:0.8rem;color:rgba(232,232,236,0.5);margin-top:2px}
+.item-weight{
+font-size:0.8rem;color:var(--amber);font-weight:500;
+white-space:nowrap;flex-shrink:0;min-width:70px;text-align:left;
+}
+.weight-summary{
+background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.2);
+border-radius:10px;padding:16px 20px;margin:20px 0;
+display:flex;align-items:center;justify-content:space-between;
+}
+.weight-summary .label{font-weight:500;font-size:0.95rem}
+.weight-summary .value{font-size:1.4rem;font-weight:700;color:var(--green)}
+
+/* EXPANDABLE */
+.expandable{
+border:1px solid var(--glass-border);border-radius:10px;
+margin-bottom:8px;overflow:hidden;
+}
+.expandable-header{
+display:flex;align-items:center;justify-content:space-between;
+padding:16px 20px;cursor:pointer;font-weight:600;font-size:0.95rem;
+background:var(--glass);transition:background 0.2s;
+}
+.expandable-header:hover{background:rgba(255,255,255,0.06)}
+.expandable-chevron{
+transition:transform 0.3s;font-size:0.8rem;
+}
+.expandable.open .expandable-chevron{transform:rotate(90deg)}
+.expandable-body{
+max-height:0;overflow:hidden;transition:max-height 0.4s ease-out;
+}
+.expandable-body-inner{padding:0 20px 20px;font-size:0.93rem;color:rgba(232,232,236,0.78)}
+.expandable-body-inner p{margin-bottom:10px}
+.expandable.open .expandable-body{max-height:1200px}
+
+/* WATER TABLE */
+.water-table{
+width:100%;border-collapse:separate;border-spacing:0;
+margin:24px 0;font-size:0.85rem;
+border:1px solid var(--glass-border);border-radius:10px;overflow:hidden;
+}
+.water-table thead{background:rgba(59,130,246,0.12)}
+.water-table th{
+padding:12px 14px;text-align:right;font-weight:600;
+border-bottom:1px solid var(--glass-border);color:var(--blue);
+}
+.water-table td{
+padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.03);
+color:rgba(232,232,236,0.75);
+}
+.water-table tr:last-child td{border-bottom:none}
+.water-table tr:hover td{background:rgba(255,255,255,0.02)}
+.water-table .reliability-high{color:var(--green)}
+.water-table .reliability-med{color:var(--amber)}
+.water-table .reliability-low{color:var(--red)}
+
+/* TABLE WRAPPER */
+.table-wrapper{overflow-x:auto;margin:24px 0;border-radius:10px}
+
+/* DIRECTION CARDS */
+.direction-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:24px 0}
+@media(max-width:768px){.direction-cards{grid-template-columns:1fr}}
+.direction-card{
+background:var(--glass);backdrop-filter:blur(12px);
+border:1px solid var(--glass-border);border-radius:12px;padding:20px;text-align:center;
+}
+.direction-card .dir-num{
+font-size:2rem;font-weight:900;color:var(--green);margin-bottom:8px;
+}
+.direction-card .dir-title{font-weight:700;font-size:1rem;margin-bottom:10px}
+.direction-card .dir-pros{color:var(--green);font-size:0.85rem;margin-bottom:4px}
+.direction-card .dir-cons{color:var(--red);font-size:0.85rem}
+
+/* FOOTER */
+footer{
+text-align:center;padding:60px 24px;
+color:rgba(232,232,236,0.3);font-size:0.8rem;
+border-top:1px solid var(--glass-border);position:relative;z-index:1;
+}
+footer a{color:var(--green);text-decoration:none}
+
+/* ANIMATIONS */
+@keyframes glow{0%,100%{filter:drop-shadow(0 0 40px rgba(34,197,94,0.3))}50%{filter:drop-shadow(0 0 60px rgba(34,197,94,0.5))}}
+.hero h1{animation:glow 4s ease-in-out infinite}
+
+/* SEASON GRID */
+.season-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:20px 0}
+@media(max-width:768px){.season-grid{grid-template-columns:1fr}}
+.season-card{
+padding:18px;border-radius:10px;
+background:var(--glass);border:1px solid var(--glass-border);
+}
+.season-card .s-icon{font-size:1.6rem;margin-bottom:6px}
+.season-card .s-name{font-weight:700;font-size:0.95rem;margin-bottom:6px}
+.season-card .s-info{font-size:0.85rem;color:rgba(232,232,236,0.7)}
+.season-card.forbidden{border-color:rgba(239,68,68,0.4);background:rgba(239,68,68,0.06)}
+.season-card.spring{border-color:rgba(34,197,94,0.4);background:rgba(34,197,94,0.06)}
+.season-card.autumn{border-color:rgba(245,158,11,0.4);background:rgba(245,158,11,0.06)}
+.season-card.winter{border-color:rgba(59,130,246,0.4);background:rgba(59,130,246,0.06)}
+
+/* EMERGENCY BOX */
+.emergency-box{
+background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.3);
+border-radius:12px;padding:20px;margin:24px 0;
+}
+.emergency-box h4{color:var(--red);margin-bottom:12px}
+.emergency-box .emer-item{
+display:flex;align-items:center;gap:12px;margin-bottom:8px;
+font-size:0.95rem;
+}
+.emergency-box .emer-num{
+font-weight:900;color:var(--red);font-size:1.1rem;
+min-width:50px;direction:ltr;text-align:center;
+}
+
+/* REGION TAG */
+.region-tag{
+display:inline-block;padding:3px 10px;border-radius:20px;
+font-size:0.75rem;font-weight:600;margin-left:8px;
+}
+.region-tag.north{background:rgba(34,197,94,0.15);color:var(--green)}
+.region-tag.center{background:rgba(59,130,246,0.15);color:var(--blue)}
+.region-tag.south{background:rgba(245,158,11,0.15);color:var(--amber)}
+.region-tag.desert{background:rgba(239,68,68,0.15);color:var(--red)}
+
+/* BADGE */
+.stat-row{display:flex;flex-wrap:wrap;gap:16px;margin:20px 0}
+.stat-badge{
+background:var(--glass);backdrop-filter:blur(12px);
+border:1px solid var(--glass-border);border-radius:10px;
+padding:16px 20px;flex:1;min-width:140px;text-align:center;
+}
+.stat-badge .stat-val{font-size:1.6rem;font-weight:900;color:var(--green)}
+.stat-badge .stat-label{font-size:0.8rem;color:rgba(232,232,236,0.5);margin-top:4px}
+
+/* MARKING STRIPE VISUAL */
+.marking-demo{
+display:flex;align-items:center;gap:12px;margin:16px 0;
+background:var(--glass);padding:14px 20px;border-radius:10px;
+border:1px solid var(--glass-border);
+}
+.marking-stripe{display:flex;flex-direction:column;width:30px;border-radius:4px;overflow:hidden}
+.marking-stripe div{height:12px}
+.marking-stripe .ms-white{background:#fff}
+.marking-stripe .ms-blue{background:#3B82F6}
+.marking-stripe .ms-orange{background:#F59E0B}
+.marking-text{font-size:0.9rem}
+</style>
+</head>
+<body>
+
+<canvas id="starfield"></canvas>
+
+<!-- MOBILE NAV -->
+<nav class="mobile-nav" id="mobileNav">
+<a href="#ch1" data-ch="1">🗺️ סקירה</a>
+<a href="#ch2" data-ch="2">💪 הכנה</a>
+<a href="#ch3" data-ch="3">🎒 ציוד</a>
+<a href="#ch4" data-ch="4">💧 מים</a>
+<a href="#ch5" data-ch="5">📋 לוגיסטיקה</a>
+<a href="#ch6" data-ch="6">⚠️ בטיחות</a>
+<a href="#ch7" data-ch="7">🌿 טבע</a>
+</nav>
+
+<!-- DESKTOP NAV -->
+<nav class="progress-nav" id="progressNav">
+<a href="#ch1" data-ch="1"><span class="nav-dot"></span>🗺️ סקירה ותכנון</a>
+<a href="#ch2" data-ch="2"><span class="nav-dot"></span>💪 הכנה גופנית</a>
+<a href="#ch3" data-ch="3"><span class="nav-dot"></span>🎒 ציוד ואבזור</a>
+<a href="#ch4" data-ch="4"><span class="nav-dot"></span>💧 אסטרטגיית מים</a>
+<a href="#ch5" data-ch="5"><span class="nav-dot"></span>📋 לוגיסטיקה</a>
+<a href="#ch6" data-ch="6"><span class="nav-dot"></span>⚠️ בטיחות וניווט</a>
+<a href="#ch7" data-ch="7"><span class="nav-dot"></span>🌿 טבע ושימור</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+<h1>שביל ישראל</h1>
+<p class="subtitle">המדריך המלא &mdash; The Complete Guide</p>
+<div class="scroll-indicator">
+<span>גלול למטה</span>
+<span style="font-size:1.4rem">&#8595;</span>
+</div>
+</section>
+
+<main>
+
+<!-- ========== CHAPTER 1 ========== -->
+<section class="chapter" id="ch1">
+<div class="chapter-header">
+<div class="chapter-label">פרק 1</div>
+<h2 class="chapter-title">🗺️ סקירה כללית ותכנון עונתי</h2>
+</div>
+{{CHAPTER_1_CONTENT}}
+</section>
+
+<!-- ========== CHAPTER 2 ========== -->
+<section class="chapter" id="ch2">
+<div class="chapter-header">
+<div class="chapter-label">פרק 2</div>
+<h2 class="chapter-title">💪 הכנה גופנית</h2>
+</div>
+{{CHAPTER_2_CONTENT}}
+</section>
+
+<!-- ========== CHAPTER 3 ========== -->
+<section class="chapter" id="ch3">
+<div class="chapter-header">
+<div class="chapter-label">פרק 3</div>
+<h2 class="chapter-title">🎒 ציוד ואבזור</h2>
+</div>
+{{CHAPTER_3_CONTENT}}
+</section>
+
+<!-- ========== CHAPTER 4 ========== -->
+<section class="chapter" id="ch4">
+<div class="chapter-header">
+<div class="chapter-label">פרק 4</div>
+<h2 class="chapter-title">💧 אסטרטגיית מים</h2>
+</div>
+{{CHAPTER_4_CONTENT}}
+</section>
+
+<!-- ========== CHAPTER 5 ========== -->
+<section class="chapter" id="ch5">
+<div class="chapter-header">
+<div class="chapter-label">פרק 5</div>
+<h2 class="chapter-title">📋 לוגיסטיקה ומלאכי שביל</h2>
+</div>
+{{CHAPTER_5_CONTENT}}
+</section>
+
+<!-- ========== CHAPTER 6 ========== -->
+<section class="chapter" id="ch6">
+<div class="chapter-header">
+<div class="chapter-label">פרק 6</div>
+<h2 class="chapter-title">⚠️ בטיחות וניווט</h2>
+</div>
+{{CHAPTER_6_CONTENT}}
+</section>
+
+<!-- ========== CHAPTER 7 ========== -->
+<section class="chapter" id="ch7">
+<div class="chapter-header">
+<div class="chapter-label">פרק 7</div>
+<h2 class="chapter-title">🌿 טבע ושימור</h2>
+</div>
+{{CHAPTER_7_CONTENT}}
+</section>
+
+</main>
+
+<footer>
+<p>שביל ישראל — המדריך המלא | <a href="#">The Complete Guide</a></p>
+<p style="margin-top:8px">נבנה עם אהבה לשביל ולהולכים בו. המידע נכון למועד העדכון האחרון — תמיד בדקו עדכונים לפני יציאה.</p>
+</footer>
+
+<script>
+// ===== STAR FIELD =====
+(function(){
+const canvas=document.getElementById('starfield');
+const ctx=canvas.getContext('2d');
+let stars=[];
+function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;initStars()}
+function initStars(){
+stars=[];
+for(let i=0;i<120;i++){
+stars.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+r:Math.random()*1.5+0.3,
+a:Math.random()*0.7+0.1,
+speed:Math.random()*0.3+0.05,
+phase:Math.random()*Math.PI*2
+});
+}
+}
+function draw(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+const t=Date.now()*0.001;
+stars.forEach(s=>{
+const flicker=Math.sin(t*s.speed+s.phase)*0.3+0.7;
+ctx.beginPath();
+ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+ctx.fillStyle=`rgba(232,232,236,${s.a*flicker})`;
+ctx.fill();
+});
+requestAnimationFrame(draw);
+}
+resize();
+window.addEventListener('resize',resize);
+draw();
+})();
+
+// ===== SCROLL ANIMATIONS =====
+const observer=new IntersectionObserver((entries)=>{
+entries.forEach(e=>{
+if(e.isIntersecting){e.target.classList.add('visible')}
+});
+},{threshold:0.1});
+document.querySelectorAll('.chapter,.timeline-item').forEach(el=>observer.observe(el));
+
+// ===== PROGRESS TRACKER =====
+const chapters=document.querySelectorAll('.chapter');
+const navLinks=document.querySelectorAll('.progress-nav a, .mobile-nav a');
+function updateNav(){
+let current='';
+chapters.forEach(ch=>{
+const rect=ch.getBoundingClientRect();
+if(rect.top<=window.innerHeight*0.4){current=ch.id}
+});
+navLinks.forEach(a=>{
+const ch=a.getAttribute('href').replace('#','');
+a.classList.toggle('active',ch===current);
+});
+}
+window.addEventListener('scroll',updateNav);
+updateNav();
+
+// ===== EXPANDABLE SECTIONS =====
+function toggleExpand(header){
+const exp=header.parentElement;
+exp.classList.toggle('open');
+}
+
+// ===== CHECKLIST PERSISTENCE & WEIGHT =====
+(function(){
+const allCheckboxes=document.querySelectorAll('.checklist-item input[type="checkbox"]');
+// Load state
+allCheckboxes.forEach(cb=>{
+const key=cb.getAttribute('data-key');
+if(key && localStorage.getItem('int-'+key)==='1'){
+cb.checked=true;
+cb.closest('.checklist-item').classList.add('checked');
+}
+});
+// Update weight
+function updateWeight(){
+let total=0;
+document.querySelectorAll('#mainChecklist .checklist-item').forEach(item=>{
+const cb=item.querySelector('input[type="checkbox"]');
+if(cb && cb.checked){
+const w=parseInt(item.getAttribute('data-weight'))||0;
+total+=w;
+}
+});
+const el=document.getElementById('totalWeight');
+if(total>=1000){
+el.textContent=(total/1000).toFixed(1)+' ק"ג';
+}else{
+el.textContent=total+' גר\'';
+}
+}
+// Events
+allCheckboxes.forEach(cb=>{
+cb.addEventListener('change',function(){
+const key=this.getAttribute('data-key');
+if(key)localStorage.setItem('int-'+key,this.checked?'1':'0');
+this.closest('.checklist-item').classList.toggle('checked',this.checked);
+updateWeight();
+});
+});
+updateWeight();
+})();
+</script>
+</body>
+</html>
