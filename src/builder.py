@@ -10,15 +10,13 @@ RE_BOLD_MARKERS = re.compile(r"\*\*(.+?)\*\*")
 
 def _enhance_text(text: str) -> str:
     """Add HTML enhancements: bold, phone links."""
-    # Bold markers → <strong>
     text = RE_BOLD_MARKERS.sub(r"<strong>\1</strong>", text)
-    # Phone numbers → clickable tel: links
     text = RE_PHONE.sub(r'<a href="tel:\1">\1</a>', text)
     return text
 
 
 class HTMLBuilder:
-    """Build HTML from parsed sections and assemble into template."""
+    """Build HTML from chapter files or parsed sections, assembled into template."""
 
     TIP_CONFIG = {
         "pro":     {"icon": "💡", "label": "טיפ מקצועי", "css": "pro"},
@@ -29,33 +27,30 @@ class HTMLBuilder:
 
     def __init__(self, template_path: Path, config: dict):
         self.template = template_path.read_text(encoding="utf-8")
+        self.template_dir = template_path.parent
         self.config = config
         self.parser = ContentParser()
 
     def build(self, raw_dir: Path, output_path: Path):
-        """Build the full HTML from raw answer files and template."""
+        """Build the full HTML from chapter files (preferred) or raw answers."""
         html = self.template
+        chapters_dir = self.template_dir / "chapters"
 
         chapters = self.config["chapters"]
         for ch in chapters:
             ch_id = ch["id"]
-            q_ids = ch["questions"]
 
             print(f"  Building Chapter {ch_id}: {ch['title']}")
 
-            # Merge content from all questions for this chapter
-            parts = []
-            for q_id in q_ids:
-                raw_file = raw_dir / f"{q_id}.txt"
-                if raw_file.exists():
-                    raw_text = raw_file.read_text(encoding="utf-8")
-                    sections = self.parser.parse(raw_text)
-                    chapter_html = self._sections_to_html(sections)
-                    parts.append(chapter_html)
-                else:
-                    print(f"    Missing: {raw_file.name}")
-
-            content = "\n<hr class='chapter-divider'>\n".join(parts) if parts else "<p>תוכן בקרוב...</p>"
+            # Priority 1: Pre-built rich chapter HTML
+            ch_file = chapters_dir / f"ch{ch_id}.html"
+            if ch_file.exists():
+                content = ch_file.read_text(encoding="utf-8")
+                print(f"    Using rich template: {ch_file.name}")
+            else:
+                # Priority 2: Generate from raw data (basic fallback)
+                print(f"    Generating from raw data (fallback)...")
+                content = self._generate_from_raw(ch, raw_dir)
 
             placeholder = f"{{{{CHAPTER_{ch_id}_CONTENT}}}}"
             html = html.replace(placeholder, content)
@@ -71,24 +66,36 @@ class HTMLBuilder:
 
         return len(html)
 
+    def _generate_from_raw(self, ch: dict, raw_dir: Path) -> str:
+        """Fallback: generate basic HTML from raw answer files."""
+        q_ids = ch["questions"]
+        parts = []
+
+        for q_id in q_ids:
+            raw_file = raw_dir / f"{q_id}.txt"
+            if raw_file.exists():
+                raw_text = raw_file.read_text(encoding="utf-8")
+                sections = self.parser.parse(raw_text)
+                chapter_html = self._sections_to_html(sections)
+                parts.append(chapter_html)
+            else:
+                print(f"    Missing: {raw_file.name}")
+
+        return "\n<hr class='chapter-divider'>\n".join(parts) if parts else "<p>תוכן בקרוב...</p>"
+
     def _sections_to_html(self, sections: list[Section]) -> str:
         """Convert a list of parsed sections to HTML string."""
         parts = []
-
         for sec in sections:
             if sec.type == "h3":
                 parts.append(f"<h3>{_enhance_text(sec.content)}</h3>")
-
             elif sec.type == "paragraph":
                 parts.append(f"<p>{_enhance_text(sec.content)}</p>")
-
             elif sec.type == "bullet_list":
                 parts.append(self._build_list(sec.items))
-
             elif sec.type == "tip_box":
                 variant = sec.meta.get("variant", "info")
                 parts.append(self._build_tip_box(sec.content, variant))
-
         return "\n".join(parts)
 
     def _build_list(self, items: list) -> str:
