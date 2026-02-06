@@ -20,9 +20,9 @@ class GitHubDeployer:
         if not self._check_tool("gh auth status", "gh auth"):
             return False
 
-        dist_file = self.root / "dist" / "index.html"
+        dist_file = self.root / "docs" / "index.html"
         if not dist_file.exists():
-            print("  dist/index.html not found. Run 'build' first.")
+            print("  docs/index.html not found. Run 'build' first.")
             return False
 
         if dry_run:
@@ -45,7 +45,7 @@ class GitHubDeployer:
         # Step 2: Stage and commit
         print("  Staging files...")
         files_to_add = [
-            "dist/", "templates/", "src/", "config.yaml",
+            "docs/", "templates/", "src/", "config.yaml",
             "run_pipeline.py", ".gitignore"
         ]
         for f in files_to_add:
@@ -91,11 +91,11 @@ class GitHubDeployer:
                 f'gh api repos/{full_name}/pages -X POST '
                 f'-f build_type=legacy '
                 f"-f source[branch]=main "
-                f"-f source[path]=/dist",
+                f"-f source[path]=/docs",
                 silent=True
             )
 
-            url = f"https://{owner}.github.io/{repo_name}/dist/"
+            url = f"https://{owner}.github.io/{repo_name}/"
             print(f"\n  Live URL: {url}")
         else:
             print("  Could not determine GitHub username")

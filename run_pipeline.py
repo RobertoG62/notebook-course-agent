@@ -90,7 +90,7 @@ def run_build(config: dict, dry_run: bool = False) -> bool:
 
     template_path = ROOT / "templates" / "base.html"
     raw_dir = ROOT / "data" / "raw"
-    output_path = ROOT / "dist" / "index.html"
+    output_path = ROOT / "docs" / "index.html"
 
     if not template_path.exists():
         print(f"  ERROR: Template not found: {template_path}")
